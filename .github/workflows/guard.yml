@@ -1,0 +1,20 @@
+name: repo-guard
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 guard.py
+        env:
+          GH_TOKEN: ${{ github.token }}
