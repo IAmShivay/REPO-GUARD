@@ -1,14 +1,15 @@
 name: repo-guard
 
 on:
-  schedule:
-    - cron: "17 * * * *"
   workflow_dispatch:
+    inputs:
+      lookback_minutes:
+        description: How far back to check repo activity, in minutes
+        default: "1440"
 
 permissions:
   contents: read
   issues: write
-  actions: write
 
 jobs:
   guard:
@@ -19,8 +20,4 @@ jobs:
       - run: python3 guard.py
         env:
           GH_TOKEN: ${{ github.token }}
-      - name: keep schedule alive
-        if: always()
-        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/guard.yml/enable"
-        env:
-          GH_TOKEN: ${{ github.token }}
+          LOOKBACK_MINUTES: ${{ inputs.lookback_minutes }}
